@@ -3,9 +3,17 @@
 import tkinter as tk
 from tkinter import ttk
 
+def print_data(virtual_tree, file_display_area):
+    print_file_id = virtual_tree.focus(item=None)
+    if print_file_id != None:
+        text_to_print = virtual_tree.item(print_file_id)
+        file_display_area.delete('1.0','4.0')
+        file_display_area.insert('1.0',f'File Data: \n {text_to_print}\n')
+
 def add_files(file_name, system_tree, virtual_tree, virtual_parent_node):
+
     sys_parent_node = check_system_file_space(system_tree)
-    system_item_id = system_tree.insert(parent= sys_parent_node, index=1, text = file_name)
+    system_item_id = system_tree.insert(parent= sys_parent_node, index=1, text = file_name, open = False)
     virtual_tree.insert(parent=virtual_parent_node, index=1, iid=system_item_id, text=file_name)
 
 def check_system_file_space(system_tree):
@@ -97,12 +105,12 @@ def remove_file_core_system(system_tree, file_id):
         i += 1
         curr_pos = fringe[i]
 
-def add_buttons(appRoot, system_tree, virtual_tree):
+def add_buttons(appRoot, system_tree, virtual_tree, file_display_area):
     entry_lable = tk.Label(appRoot,text="Enter File Name: ")
     add_file_entry = tk.Entry(appRoot)
     add_file_button = tk.Button(appRoot, text="Add File", command = lambda: add_files(add_file_entry.get(), system_tree, virtual_tree, virtual_tree.focus()))
     delete_file_button = tk.Button(appRoot, text="Delete File", command = lambda: delete_file(system_tree, virtual_tree))
-    print_file_button = tk.Button(appRoot, text="Print File")
+    print_file_button = tk.Button(appRoot, text="Print File", command = lambda: print_data(virtual_tree, file_display_area))
 
     entry_lable.pack()
     add_file_entry.pack()
@@ -114,7 +122,10 @@ def main():
     root = tk.Tk()
     drive_A_ID, drive_B_ID,drive_C_ID, system_tree_reference = core_system_files(root)
     virtual_driver_ID, virtual_file_tree_reference = user_virtual_files(root)
-    add_buttons(root, system_tree_reference, virtual_file_tree_reference)
+    file_output = tk.Text(root, height = 5, width=40)
+    file_output.pack()
+    file_output.insert('1.0','File Data: \n')
+    add_buttons(root, system_tree_reference, virtual_file_tree_reference, file_output)
     add_files("Kobe's Stats", system_tree_reference, virtual_file_tree_reference, virtual_driver_ID)
     root.mainloop()
 
