@@ -6,7 +6,7 @@ from tkinter import ttk
 def print_data(virtual_tree, file_display_area):
     print_file_id = virtual_tree.focus(item=None)
     if print_file_id != None:
-        text_to_print = virtual_tree.item(print_file_id, 'values')
+        text_to_print = virtual_tree.item(print_file_id, 'values'[0])
         #text_to_print = text_to_print['values']
         file_display_area.delete('1.0','4.0')
         file_display_area.insert('1.0',f'File Data: \n {text_to_print}\n')
@@ -121,6 +121,7 @@ def add_buttons(appRoot, system_tree, virtual_tree, file_display_area):
 
 def main():
     root = tk.Tk()
+    root.title("File System Sim")
     drive_A_ID, drive_B_ID,drive_C_ID, system_tree_reference = core_system_files(root)
     virtual_driver_ID, virtual_file_tree_reference = user_virtual_files(root)
     file_output = tk.Text(root, height = 5, width=40)
