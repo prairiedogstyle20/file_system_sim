@@ -6,7 +6,8 @@ from tkinter import ttk
 def print_data(virtual_tree, file_display_area):
     print_file_id = virtual_tree.focus(item=None)
     if print_file_id != None:
-        text_to_print = virtual_tree.item(print_file_id)
+        text_to_print = virtual_tree.item(print_file_id, 'values')
+        #text_to_print = text_to_print['values']
         file_display_area.delete('1.0','4.0')
         file_display_area.insert('1.0',f'File Data: \n {text_to_print}\n')
 
@@ -14,7 +15,7 @@ def add_files(file_name, system_tree, virtual_tree, virtual_parent_node):
 
     sys_parent_node = check_system_file_space(system_tree)
     system_item_id = system_tree.insert(parent= sys_parent_node, index=1, text = file_name, open = False)
-    virtual_tree.insert(parent=virtual_parent_node, index=1, iid=system_item_id, text=file_name)
+    virtual_tree.insert(parent=virtual_parent_node, index=1, iid=system_item_id, text=file_name, values=f'{system_item_id}')
 
 def check_system_file_space(system_tree):
     locations = []
