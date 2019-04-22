@@ -5,32 +5,51 @@ from tkinter import ttk
 
 def print_data(virtual_tree, file_display_area):
     print_file_id = virtual_tree.focus(item=None)
-    if print_file_id != None:
-        text_to_print = virtual_tree.item(print_file_id, 'values'[0])
-        #text_to_print = text_to_print['values']
+    text_to_print = virtual_tree.item(print_file_id,'text')
+    if print_file_id != None and '.' in text_to_print:
         file_display_area.delete('1.0','4.0')
         file_display_area.insert('1.0',f'File Data: \n {text_to_print}\n')
 
 def add_files(file_name, system_tree, virtual_tree, virtual_parent_node):
 
-    sys_parent_node = check_system_file_space(system_tree)
-    system_item_id = system_tree.insert(parent= sys_parent_node, index=1, text = file_name, open = False)
+    sys_parent_node = check_system_file_space(system_tree, virtual_parent_node)
+    system_item_id = system_tree.insert(parent= sys_parent_node, index=1, text = file_name, open = True)
     virtual_tree.insert(parent=virtual_parent_node, index=1, iid=system_item_id, text=file_name, values=f'{system_item_id}')
 
-def check_system_file_space(system_tree):
+def check_system_file_space(system_tree, virtual_parent_node):
+
     locations = []
+    root = []
+    seen = []
 
     for each in system_tree.get_children(item=None):
         locations.append(each)
+        seen.append(each)
+        root.append(each)
+
+    done = False
+    i_c = 0
+    while done == False:
+        print(i_c)
+        for every in system_tree.get_children(locations[i_c]):
+            if every == virtual_parent_node:
+                return virtual_parent_node
+            elif every in seen:
+                continue
+            else:
+                locations.append(every)
+        i_c += 1
+        if i_c == len(locations):
+            done = True
 
     i = 0
-    curr_pos = locations[i]
+    curr_pos = root[i]
     while len(locations) > 0:
             if len(system_tree.get_children(curr_pos)) < 4:
                 return curr_pos
             else:
                 i += 1
-                curr_pos = locations[i]
+                curr_pos = root[i]
 
 #returns the identifier for each of the three
 # base drives on the main system in the order
